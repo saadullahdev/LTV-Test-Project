@@ -1,0 +1,30 @@
+version: '3'
+services:
+  short-app-rspec:
+    build: .
+    image: short-app
+    env_file: ./test.env
+    working_dir: /app
+    command: rspec
+    volumes:
+      - .:/app:cached
+    depends_on:
+    - mariadb_rspec
+    - redis_rspec
+
+  mariadb_rspec:
+    image: mariadb
+    container_name: short_app_mariadb_test
+    environment:
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_DATABASE=short_test
+    volumes:
+    - maria-test:/var/lib/mysql
+
+  redis_rspec:
+    image: redis
+    container_name: redis_test
+
+volumes:
+  maria-test:
+    driver: local
