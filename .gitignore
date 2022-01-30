@@ -8,3 +8,5 @@ bin/
 *.env
 
 .keep
+.byebug_history
+/log/
