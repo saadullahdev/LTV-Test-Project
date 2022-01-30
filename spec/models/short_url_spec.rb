@@ -49,7 +49,11 @@ RSpec.describe ShortUrl, type: :model do
 
     it "fetches the title" do
       short_url.update_title!
-      expect(short_url.title).to eq("Frequently Asked Questions | BeenVerified")
+      # Needed to fetch updated instance from DB, because Background job has updated the record but
+      # the instance present in spec file is outdated
+      
+      updated_short_url = ShortUrl.find_by(full_url: "https://www.beenverified.com/faq/")
+      expect(updated_short_url.title).to eq("Frequently Asked Questions | BeenVerified")
     end
 
     context "with a higher id" do

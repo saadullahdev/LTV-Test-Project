@@ -27,6 +27,7 @@ class ShortUrl < ApplicationRecord
   end
 
   def update_title!
+    UpdateTitleJob.perform_now self.id
   end
 
   private

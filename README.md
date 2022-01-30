@@ -30,3 +30,8 @@
 # Checking your short URL redirect
 
     curl -I localhost:3000/abc
+
+# Algorithm for url shortening
+
+    * Used ID of the full-url record to generate its short-code
+    * It is bidirectional supported (full-url to short-url and short-url to full-url)

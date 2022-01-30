@@ -5,34 +5,37 @@ class ShortUrlsController < ApplicationController
 
   def index
     @top_urls = ShortUrl.top_urls.pluck(:full_url)
-    
     render json: { urls: @top_urls }, status: :ok
   end
 
   def create
-    if params[:full_url].present?
-      @short_url = ShortUrl.new full_url: params[:full_url]
-
-      if @short_url.save
-        render json: { short_code: @short_url.short_code }, status: :ok
-      else
-        render json: { errors: @short_url.errors.full_messages.first }, status: :unprocessable_entity
-      end
+    @short_url = ShortUrl.find_or_create_by(full_url: short_url_params)
+    if @short_url.save
+      render json: { short_code: @short_url.short_code }, status: :ok
+    else
+      render json: { errors: @short_url.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
   def show
-    if params[:id].present?
-      @url = ShortUrl.find_by_short_code params[:id]
-
-      if @url.present?
-        @url.click_count += 1
-        @url.save
-        redirect_to @url.full_url
-      else
-        render json: {}, status: :not_found
-      end
+    @url = ShortUrl.find_by_short_code short_code_params
+    if @url.present?
+      @url.click_count += 1
+      @url.save
+      redirect_to @url.full_url
+    else
+      render json: {}, status: :not_found
     end
+  end
+
+  private
+
+  def short_url_params
+    params[:full_url]
+  end
+
+  def short_code_params
+    params[:id]
   end
 
 end
